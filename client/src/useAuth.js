@@ -8,7 +8,7 @@ export default function useAuth(code) {
 
   useEffect(() => {
     axios
-      .post("http://localhost:5000/api/login", {
+      .post("/api/login", {
         code,
       })
       .then((res) => {
@@ -23,10 +23,10 @@ export default function useAuth(code) {
   }, [code]);
 
   useEffect(() => {
-    if (!refreshToken || expiresIn) return;
+    if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
       axios
-        .post("http://localhost:5000/api/refresh", {
+        .post("/api/refresh", {
           refreshToken,
         })
         .then((res) => {
@@ -36,7 +36,7 @@ export default function useAuth(code) {
         .catch(() => {
           window.location = "/";
         });
-    }, (expiresIn - 60) * 1000);
+    }, (expiresIn - 60) * 1000); // refresh token 60 seconds before expire
 
     return () => clearInterval(interval);
   }, [refreshToken, expiresIn]);
