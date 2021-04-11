@@ -10,6 +10,7 @@ const spotifyApi = new SpotifyWebApi({
 export default function Dashboard({ code }) {
   const accessToken = useAuth(code);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [searchResults, setSearchResults] = useState([]);
   console.log(searchResults);
 
@@ -19,14 +20,20 @@ export default function Dashboard({ code }) {
   }, [accessToken]);
 
   useEffect(() => {
-    if (!search) return setSearchResults([]);
+    const timerId = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 800);
+
+    return () => {
+      clearInterval(timerId);
+    };
+  }, [search]);
+
+  useEffect(() => {
+    if (!debouncedSearch) return setSearchResults([]);
     if (!accessToken) return;
 
-    let cancel = false;
-
-    spotifyApi.searchTracks(search).then((res) => {
-      if (cancel) return;
-
+    spotifyApi.searchTracks(debouncedSearch).then((res) => {
       setSearchResults(
         res.body.tracks.items.map((track) => {
           const smallestAlbumImage = track.album.images.reduce(
@@ -46,9 +53,7 @@ export default function Dashboard({ code }) {
         })
       );
     });
-
-    return () => (cancel = true);
-  }, [search, accessToken]);
+  }, [debouncedSearch, accessToken]);
 
   return (
     <Container className="d-flex flex-column py-2" style={{ height: "100vh" }}>
