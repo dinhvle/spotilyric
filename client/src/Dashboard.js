@@ -2,6 +2,8 @@ import useAuth from "./useAuth";
 import { Container, Form } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-node";
+import TrackSearchResult from "./TrackSearchResult";
+import Player from "./Player";
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "336cc5f653c948679d20e75dd48b99d3",
@@ -9,10 +11,15 @@ const spotifyApi = new SpotifyWebApi({
 
 export default function Dashboard({ code }) {
   const accessToken = useAuth(code);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("hello");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [searchResults, setSearchResults] = useState([]);
-  console.log(searchResults);
+  const [playingTrack, setPlayingTrack] = useState();
+
+  function chooseTrack(track) {
+    setPlayingTrack(track);
+    // setSearch("");
+  }
 
   useEffect(() => {
     if (!accessToken) return;
@@ -64,9 +71,17 @@ export default function Dashboard({ code }) {
         onChange={(e) => setSearch(e.target.value)}
       />
       <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
-        Songs
+        {searchResults.map((track) => (
+          <TrackSearchResult
+            track={track}
+            key={track.uri}
+            chooseTrack={chooseTrack}
+          />
+        ))}
       </div>
-      <div>Bottom</div>
+      <div>
+        <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+      </div>
     </Container>
   );
 }
