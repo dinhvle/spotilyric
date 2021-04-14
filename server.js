@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const SpotifyWebApi = require("spotify-web-api-node");
+const lyricsFinder = require("lyrics-finder");
 require("dotenv").config();
 
 const app = express();
@@ -53,6 +54,13 @@ app.post("/api/login", (req, res) => {
       console.log(err);
       res.sendStatus(400);
     });
+});
+
+app.get("/api/lyrics", async (req, res) => {
+  const lyrics =
+    (await lyricsFinder(req.query.artist, req.query.track)) ||
+    "No Lyrics Found";
+  res.json({ lyrics });
 });
 
 const port = process.env.PORT || 5000;
