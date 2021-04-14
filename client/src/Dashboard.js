@@ -20,7 +20,6 @@ export default function Dashboard({ code }) {
 
   function chooseTrack(track) {
     setPlayingTrack(track);
-    setSearch("");
     setLyrics("");
   }
 
@@ -87,21 +86,23 @@ export default function Dashboard({ code }) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
-        {searchResults.map((track) => (
-          <TrackSearchResult
-            track={track}
-            key={track.uri}
-            chooseTrack={chooseTrack}
-          />
-        ))}
-        {searchResults.length === 0 && (
-          <div className="text-center" style={{ whiteSpace: "pre" }}>
+      <div className="d-flex flex-row my-2" style={{ overflowY: "auto" }}>
+        <div className="flex-fill">
+          {searchResults.map((track) => (
+            <TrackSearchResult
+              track={track}
+              key={track.uri}
+              chooseTrack={chooseTrack}
+            />
+          ))}
+        </div>
+        {searchResults.length !== 0 && (
+          <div className="flex-fill text-center" style={{ whiteSpace: "pre" }}>
             {lyrics}
           </div>
         )}
       </div>
-      <div>
+      <div className="d-flex flex-row my-2">
         <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
       </div>
     </Container>
