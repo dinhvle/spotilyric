@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const SpotifyWebApi = require("spotify-web-api-node");
 const lyricsFinder = require("lyrics-finder");
@@ -8,6 +9,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+app.use(express.static(path.join(__dirname, "client/build")));
 
 app.post("/api/refresh", (req, res) => {
   const refreshToken = req.body.refreshToken;
