@@ -8,7 +8,7 @@ export default function useAuth(code) {
 
   useEffect(() => {
     axios
-      .post("https://infinite-harbor-55761.herokuapp.com/api/login", {
+      .post("/api/login", {
         code,
       })
       .then((res) => {
@@ -18,7 +18,7 @@ export default function useAuth(code) {
         window.history.pushState({}, null, "/");
       })
       .catch(() => {
-        window.location = "https://infinite-harbor-55761.herokuapp.com/";
+        window.location = "/";
       });
   }, [code]);
 
@@ -26,7 +26,7 @@ export default function useAuth(code) {
     if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
       axios
-        .post("https://infinite-harbor-55761.herokuapp.com/api/refresh", {
+        .post("/api/refresh", {
           refreshToken,
         })
         .then((res) => {
@@ -34,7 +34,7 @@ export default function useAuth(code) {
           setExpiresIn(res.data.expiresIn);
         })
         .catch(() => {
-          window.location = "https://infinite-harbor-55761.herokuapp.com/";
+          window.location = "/";
         });
     }, (expiresIn - 60) * 1000); // refresh token 60 seconds before expire
 

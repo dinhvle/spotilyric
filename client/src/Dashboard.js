@@ -27,7 +27,7 @@ export default function Dashboard({ code }) {
   useEffect(() => {
     if (!playingTrack) return;
     axios
-      .get("https://infinite-harbor-55761.herokuapp.com/api/lyrics", {
+      .get("/api/lyrics", {
         params: {
           track: playingTrack.title,
           artist: playingTrack.artist,
